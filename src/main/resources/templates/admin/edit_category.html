@@ -9,10 +9,10 @@
 	<section>
 		<div class="container-fluid p-4 mt-5">
 			<div class="row">
-				<div class="col-md-3">
+				<div class="col-md-3 offset-md-5">
 					<div class="card card-sh">
 						<div class="card-header text-center ">
-							<p class="fs-4">Add Category</p>
+							<p class="fs-4">Edit Category</p>
 							<th:block th:if="${session.success}">
 								<p class="text-success f-bold">[[${session.success}]]</p>
 								<th:block th:text="${@commonServiceImpl.removeSessionMsg()}">
@@ -23,60 +23,35 @@
 								<th:block th:text="${@commonServiceImpl.removeSessionMsg()}">
 								</th:block>
 							</th:block>
-							
+
 						</div>
 						<div class="card-body">
-							<form action="/admin/saveCategory " method="post"
+							<form action="/admin/updateCategory " method="post"
 								enctype="multipart/form-data">
+								<input type="hidden" name="id" th:value="${category.id}">
 								<div class="mb-3">
 									<label>Enter Category</label> <input type="text" name="name"
-										class="form-control" required="required">
+										th:value="${category.name}" class="form-control"
+										required="required">
 								</div>
 								<div class="mb-3">
+
 									<label>Status</label> <select class="form-control"
 										name="status" required="required">
 										<option value="">--select--</option>
 										<option value="Active">Active</option>
 										<option value="Inactive">Inactive</option>
-									</select>
+									</select> [[${category.status}]]
 								</div>
 
 								<div class="mb-3">
 									<label>Upload Image</label> <input type="file" name="file"
 										class="form-control" required="required">
 								</div>
-								<button class="btn btn-primary col-md-12">Add</button>
+								<img th:src="@{'/img/category_img/'+${category.imageName}}"
+									width="100px" >
+								<button class="btn btn-primary col-md-12">update</button>
 							</form>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-8">
-					<div class="card">
-						<div class="card-header text-center fs-4">Category details</div>
-						<div class="card-body">
-							<table class="table">
-								<thead>
-									<tr>
-										<th scope="col">Sr No</th>
-										<th scope="col">Category</th>
-										<th scope="col">Status</th>
-										<th scope="col">Image</th>
-										<th scope="col">Action</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:each="cat,c:${categorys}">
-										<th scope="row">[[${c.count}]]</th>
-										<td>[[${cat.name}]]</td>
-										<td>[[${cat.status}]]</td>
-										<td><img th:src="@{'/img/category_img/'+${cat.imageName}}" width="50px" height="80px"></td>
-										<td><a th:href="@{'/admin/loadEditCategory/'+${cat.id}}" class="btn btn-primary btn-sm"><i class="fa-solid fa-pen-to-square fa-1x"></i>Edit</a>
-										<a th:href="@{'/admin/deleteCategory/'+${cat.id}}" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash fa-1x"></i>Delete</a>
-										</td>
-									</tr>
-
-								</tbody>
-							</table>
 						</div>
 					</div>
 				</div>
