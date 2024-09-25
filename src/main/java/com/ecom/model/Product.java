@@ -26,14 +26,20 @@ public class Product {
 	private String stock;
 	
 	private String image;
+	
+	private int discount;
+	
+	private Boolean isActive;
+	
+	private double discountPrice;
 
 	public Product() {
 		super();
-		// TODO Auto-generated constructor stub
+		
 	}
 
-	public Product(int id, String title, String description, String category, Double price, String stock,
-			String image) {
+	public Product(int id, String title, String description, String category, Double price, String stock, String image,
+			int discount, Boolean isActive, double discountPrice) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -42,6 +48,9 @@ public class Product {
 		this.price = price;
 		this.stock = stock;
 		this.image = image;
+		this.discount = discount;
+		this.isActive = isActive;
+		this.discountPrice = discountPrice;
 	}
 
 	public int getId() {
@@ -98,7 +107,31 @@ public class Product {
 
 	public void setImage(String image) {
 		this.image = image;
-	} 
-	
-	
+	}
+
+	public int getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(int discount) {
+		this.discount = discount;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	public double getDiscountPrice() {
+		return discountPrice;
+	}
+
+	public void setDiscountPrice(double discountPrice) {
+		this.discountPrice = discountPrice;
+	}
+    
 }
+    

@@ -84,7 +84,7 @@ public class AdminController {
 			} else {
 
 				// We can used for store image path in our folder
-				File saveFile = new ClassPathResource("static/img").getFile();
+				File saveFile = new ClassPathResource("static/img/").getFile();
 				Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" + File.separator
 						+ file.getOriginalFilename());
 				System.out.println(path);
@@ -120,13 +120,13 @@ public class AdminController {
 		String imageName = file.isEmpty() ? oldCategory.getImageName() : file.getOriginalFilename();
 		if (!ObjectUtils.isEmpty(category)) {
 			oldCategory.setName(category.getName());
-			oldCategory.setStatus(category.getStatus());
+			oldCategory.setIsActive(category.getIsActive());
 			oldCategory.setImageName(imageName);
 		}
 		Category updateCategory = categoryService.saveCategory(oldCategory);
 		if (!ObjectUtils.isEmpty(updateCategory)) {
 			if (!file.isEmpty()) {
-				File saveFile = new ClassPathResource("static/img").getFile();
+				File saveFile = new ClassPathResource("static/img/").getFile();
 				Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" + File.separator
 						+ file.getOriginalFilename());
 				System.out.println(path);
@@ -146,10 +146,12 @@ public class AdminController {
 
 		String imageName = file != null ? file.getOriginalFilename() : "default.jpg";
 		product.setImage(imageName);
+		product.setDiscount(0);
+		product.setDiscountPrice(product.getPrice());
 		Product saveProduct = productService.saveProduct(product);
 		if (!ObjectUtils.isEmpty(saveProduct)) {
 
-			File saveFile = new ClassPathResource("static/img").getFile();
+			File saveFile = new ClassPathResource("static/img/").getFile();
 			Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "product_img" + File.separator
 					+ file.getOriginalFilename());
 			System.out.println(path);
@@ -187,36 +189,42 @@ public class AdminController {
 	}
 
 	@PostMapping("/updateProduct")
-	public String updateProduct(@ModelAttribute Product product,@RequestParam ("file") MultipartFile image,HttpSession session) throws IOException 
-	{
+	public String updateProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile image,
+			HttpSession session) throws IOException {
 		Product oldProduct = productService.getProductById(product.getId());
-		String imageName=image.isEmpty() ? oldProduct.getImage() : image.getOriginalFilename();
+		String imageName = image.isEmpty() ? oldProduct.getImage() : image.getOriginalFilename();
 		oldProduct.setImage(imageName);
-		if(!ObjectUtils.isEmpty(product)) 
-		{
+		if (!ObjectUtils.isEmpty(product)) {
 			oldProduct.setTitle(product.getTitle());
 			oldProduct.setDescription(product.getDescription());
 			oldProduct.setCategory(product.getCategory());
 			oldProduct.setPrice(product.getPrice());
 			oldProduct.setStock(product.getStock());
-			
+			oldProduct.setIsActive(product.getIsActive());
+
+			oldProduct.setDiscount(product.getDiscount());
+			// This is use for discount on product
+			Double discount = product.getPrice() * (product.getDiscount() / 100.0);
+			Double discountPrice = product.getPrice() - discount;
+			oldProduct.setDiscountPrice(discountPrice);
 		}
-		Product updateProduct = productService.saveProduct(oldProduct);
-		if(!ObjectUtils.isEmpty(updateProduct)) 
-		{
-			if (!image.isEmpty()) {
-				File saveFile = new ClassPathResource("static/img").getFile();
-				Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" + File.separator
-						+ image.getOriginalFilename());
-				System.out.println(path);
-				Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+		if (product.getDiscount() < 0 || product.getDiscount() > 100) {
+			session.setAttribute("errormsg", "Invalid discount!!");
+		} else {
+			Product updateProduct = productService.saveProduct(oldProduct);
+			if (!ObjectUtils.isEmpty(updateProduct)) {
+				if (!image.isEmpty()) {
+					File saveFile = new ClassPathResource("static/img/").getFile();
+					Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "product_img" + File.separator
+							+ image.getOriginalFilename());
+					System.out.println(path);
+					Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+				}
+				session.setAttribute("success", "product updated sucessfully!!!");
+			} else {
+				session.setAttribute("errormsg", "something went wrong");
 			}
-			session.setAttribute("success", "product saved sucessfully!!!");
 		}
-		else 
-		{
-			session.setAttribute("errormsg", "something went wrong");
-		}
-			return "redirect:/admin/updateProduct/"+product.getId();
+		return "redirect:/admin/updateProduct/" + product.getId();
 	}
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import com.ecom.model.Category;
 import com.ecom.model.Product;
 import com.ecom.repository.ProductRepository;
 import com.ecom.service.ProductService;
@@ -41,6 +42,12 @@ public class ProductServiceImpl implements ProductService {
 		Product product = productRepository.findById(id).orElse(null);
 		
 		return product;
+	}
+
+	@Override
+	public List<Product> getAllActiveProduct() {
+		List<Product> products= productRepository.findByIsActiveTrue();
+		return products;
 	}
 
 
