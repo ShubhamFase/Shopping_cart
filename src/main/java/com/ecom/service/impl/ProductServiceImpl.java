@@ -12,6 +12,8 @@ import com.ecom.model.Product;
 import com.ecom.repository.ProductRepository;
 import com.ecom.service.ProductService;
 
+import io.micrometer.common.util.StringUtils;
+
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -44,9 +46,17 @@ public class ProductServiceImpl implements ProductService {
 		return product;
 	}
 
-	@Override
-	public List<Product> getAllActiveProduct() {
-		List<Product> products= productRepository.findByIsActiveTrue();
+	
+public List<Product> getAllActiveProduct(String category) {
+		List<Product> products=null;
+		if(ObjectUtils.isEmpty(category)) 
+		{
+			products= productRepository.findByIsActiveTrue();
+		}else 
+		{
+			products=productRepository.findByCategory(category);
+		}
+		 
 		return products;
 	}
 
