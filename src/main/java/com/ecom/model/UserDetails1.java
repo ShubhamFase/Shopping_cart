@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class UserDetails {
+public class UserDetails1 {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,14 +29,16 @@ public class UserDetails {
 	private String password;
 	
 	private String profileImage;
+	
+	private String role;
 
-	public UserDetails() {
+	public UserDetails1() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public UserDetails(int id, String name, String mobileNumber, String email, String address, String city,
-			String state, String pincode, String password, String profileImage) {
+	public UserDetails1(int id, String name, String mobileNumber, String email, String address, String city,
+			String state, String pincode, String password, String profileImage,String role) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -48,6 +50,7 @@ public class UserDetails {
 		this.pincode = pincode;
 		this.password = password;
 		this.profileImage = profileImage;
+		this.role=role; 
 	}
 
 	public int getId() {
@@ -128,6 +131,14 @@ public class UserDetails {
 
 	public void setProfileImage(String profileImage) {
 		this.profileImage = profileImage;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 	
 }

@@ -16,13 +16,14 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ecom.model.Category;
 import com.ecom.model.Product;
-import com.ecom.model.UserDetails;
+import com.ecom.model.UserDetails1;
 import com.ecom.service.CategoryService;
 import com.ecom.service.ProductService;
 import com.ecom.service.UserService;
@@ -46,7 +47,7 @@ public class HomeController {
 	{
 		return"index";
 	}
-	@GetMapping("/login")
+	@GetMapping("/signin")
 	public String loginPage() 
 	{
 		return"login";
@@ -74,12 +75,12 @@ public class HomeController {
 		return "view_product";
 	}
 	
-	@RequestMapping("/saveUser")
-	public String saveUser(@ModelAttribute UserDetails userDetails,@RequestParam("file") MultipartFile file,HttpSession session) throws IOException 
+	@PostMapping("/saveUser")
+	public String saveUser(@ModelAttribute UserDetails1 userDetails,@RequestParam("file") MultipartFile file,HttpSession session) throws IOException 
 	{
 		String imageName=file.isEmpty() ? "default.jpg": file.getOriginalFilename();
 		userDetails.setProfileImage(imageName);
-		UserDetails saveUser = userService.saveUser(userDetails);
+		UserDetails1 saveUser = userService.saveUser(userDetails);
 		if(!ObjectUtils.isEmpty(saveUser)) 
 		{
 			if(!file.isEmpty()) 
@@ -87,7 +88,7 @@ public class HomeController {
 				File saveFile = new ClassPathResource("static/img/").getFile();
 				Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profile_img" + File.separator
 						+ file.getOriginalFilename());
-				System.out.println(path);
+//				System.out.println(path);
 				Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
 				

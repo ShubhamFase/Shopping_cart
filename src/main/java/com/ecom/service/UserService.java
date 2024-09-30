@@ -1,8 +1,8 @@
 package com.ecom.service;
 
-import com.ecom.model.UserDetails;
+import com.ecom.model.UserDetails1;
 
 public interface UserService {
 
-	public UserDetails saveUser(UserDetails userDetails);
+	public UserDetails1 saveUser(UserDetails1 userDetails);
 }
