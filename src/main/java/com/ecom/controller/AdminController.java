@@ -7,11 +7,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.Principal;
 import java.util.List;
 
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -25,10 +27,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ecom.model.Category;
 import com.ecom.model.Product;
+import com.ecom.model.UserDetails1;
 import com.ecom.service.CategoryService;
 import com.ecom.service.CommonService;
 import com.ecom.service.CommonServiceImpl;
 import com.ecom.service.ProductService;
+import com.ecom.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -41,6 +45,21 @@ public class AdminController {
 
 	@Autowired
 	private ProductService productService;
+
+	@Autowired
+	private UserService userService;
+
+	// we can used for show category and category wise product to home page
+	@ModelAttribute
+	public void getUserDetails(Principal p, Model m) {
+		if (p != null) {
+			String email = p.getName();
+			UserDetails1 userDetail = userService.getUserByEmail(email);
+			m.addAttribute("user", userDetail);
+		}
+		List<Category> category = categoryService.getAllActiveCategory();
+		m.addAttribute("category", category);
+	}
 
 	@GetMapping("/")
 	public String index() {
@@ -60,6 +79,7 @@ public class AdminController {
 		return "admin/category";
 	}
 
+	// we can used for save category from admin to database
 	@PostMapping("/saveCategory")
 	public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file,
 			HttpSession session) throws IOException {
@@ -96,6 +116,7 @@ public class AdminController {
 		return "redirect:/admin/category";
 	}
 
+	// we can used for delete id from table
 	@GetMapping("/deleteCategory/{id}")
 	public String deleteCategory(@PathVariable long id, HttpSession session) {
 		Boolean deleteCategory = categoryService.deleteCategory(id);
@@ -107,12 +128,14 @@ public class AdminController {
 		return "redirect:/admin/category";
 	}
 
+	// show category details to edit page from database
 	@GetMapping("/loadEditCategory/{id}")
 	public String loadEditCategory(@PathVariable int id, Model m) {
 		m.addAttribute("category", categoryService.getCategoryById(id));
 		return "admin/edit_category";
 	}
 
+	// update category and then save into database
 	@PostMapping("/updateCategory")
 	public String updateCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file,
 			HttpSession session) throws IOException {
@@ -140,6 +163,7 @@ public class AdminController {
 		return "redirect:/admin/loadEditCategory/" + category.getId();
 	}
 
+	// we can used for save product in table
 	@PostMapping("/saveProduct")
 	public String saveCategory(@ModelAttribute Product product, @RequestParam("file") MultipartFile file,
 			HttpSession session) throws IOException {
@@ -164,12 +188,14 @@ public class AdminController {
 		return "redirect:/admin/addproduct";
 	}
 
+	// we can used for view all products to user
 	@GetMapping("/products")
 	public String loadViewProducts(Model m) {
 		m.addAttribute("products", productService.getAllProducts());
 		return "admin/products";
 	}
 
+	// we can used for delete product from table
 	@GetMapping("/deleteProduct/{id}")
 	public String deleteProduct(@PathVariable int id, HttpSession session) {
 		Boolean deleteProduct = productService.deleteProduct(id);
@@ -181,6 +207,7 @@ public class AdminController {
 		return "redirect:/admin/products";
 	}
 
+	// edit product
 	@GetMapping("/updateProduct/{id}")
 	public String updateProduct(@PathVariable int id, Model m) {
 		m.addAttribute("product", productService.getProductById(id));
@@ -188,6 +215,7 @@ public class AdminController {
 		return "admin/edit_product";
 	}
 
+	// update product
 	@PostMapping("/updateProduct")
 	public String updateProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile image,
 			HttpSession session) throws IOException {
@@ -226,5 +254,29 @@ public class AdminController {
 			}
 		}
 		return "redirect:/admin/updateProduct/" + product.getId();
+	}
+
+	@GetMapping("/users")
+	public String getAllUsers(Model m) {
+		List<UserDetails1> users = userService.getUsers("ROLE_USER");
+
+		m.addAttribute("users", users);
+		return "admin/users";
+	}
+	
+	@GetMapping("/updateAccountstatus")
+	public String accountStatus(@RequestParam boolean status,@RequestParam int id,HttpSession session ) 
+	{
+		boolean updateAccount=userService.updateAccountStatus(id,status);
+		
+		if(updateAccount) 
+		{
+			session.setAttribute("success", "Account Status updated sucessfully!!!");
+		}
+		else 
+		{
+			session.setAttribute("errormsg", "something went wrong");
+		}
+		return "redirect:/admin/users";
 	}
 }

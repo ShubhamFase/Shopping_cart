@@ -19,12 +19,14 @@ public class CustomUser implements UserDetails {
 	}
 
 	public Collection<? extends GrantedAuthority> getAuthorities() {
+
 	  SimpleGrantedAuthority authority=new SimpleGrantedAuthority(user.getRole());
 		return Arrays.asList(authority);
 	}
 
 	@Override
 	public String getPassword() {
+
 		
 		return user.getPassword();
 	}
@@ -34,5 +36,8 @@ public class CustomUser implements UserDetails {
 		
 		return user.getEmail();
 	}
-
+    public boolean isEnabled() 
+    {
+	   return user.isEnable();
+    }  
 }

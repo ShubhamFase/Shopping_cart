@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,18 @@ public class HomeController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@ModelAttribute
+	public void getUserDetails(Principal p,Model m) 
+	{
+		if(p!=null) {
+		String email= p.getName();
+		UserDetails1 userDetail = userService.getUserByEmail(email);
+		m.addAttribute("user",userDetail);
+		}
+		List<Category> category = categoryService.getAllActiveCategory();
+		m.addAttribute("category", category);
+	}
 	
 	@GetMapping("/")
 	public String home() 

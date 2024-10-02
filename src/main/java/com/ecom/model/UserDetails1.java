@@ -31,6 +31,8 @@ public class UserDetails1 {
 	private String profileImage;
 	
 	private String role;
+	
+	private boolean isEnable;
 
 	public UserDetails1() {
 		super();
@@ -38,7 +40,7 @@ public class UserDetails1 {
 	}
 
 	public UserDetails1(int id, String name, String mobileNumber, String email, String address, String city,
-			String state, String pincode, String password, String profileImage,String role) {
+			String state, String pincode, String password, String profileImage,String role,boolean isEnable) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -51,6 +53,7 @@ public class UserDetails1 {
 		this.password = password;
 		this.profileImage = profileImage;
 		this.role=role; 
+		this.isEnable= isEnable; 
 	}
 
 	public int getId() {
@@ -140,5 +143,15 @@ public class UserDetails1 {
 	public void setRole(String role) {
 		this.role = role;
 	}
+
+	public boolean isEnable() {
+		return isEnable;
+	}
+
+	public void setEnable(boolean isEnable) {
+		this.isEnable = isEnable;
+	}
+
+	
 	
 }
