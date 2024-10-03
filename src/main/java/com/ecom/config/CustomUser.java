@@ -40,4 +40,8 @@ public class CustomUser implements UserDetails {
     {
 	   return user.isEnable();
     }  
+    public boolean isAccountNonLocked() 
+    {
+    	return user.isAccountNonLocked();
+    }
 }

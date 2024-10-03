@@ -16,4 +16,10 @@ public interface UserService {
 
 	public boolean updateAccountStatus(int id, boolean status);
 	
+	public void increaseFailedAttempt(UserDetails1 user);
+	
+	public void userAccountLocked(UserDetails1 user);
+	
+	public boolean unlockAccountTimeExpired(UserDetails1 user);
+	
 }

@@ -1,5 +1,7 @@
 package com.ecom.model;
 
+import java.util.Date;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,14 +35,23 @@ public class UserDetails1 {
 	private String role;
 	
 	private boolean isEnable;
+	
+	private boolean accountNonLocked;
+	
+	private int failedAttempt;
+	
+	private Date lockTime;
 
 	public UserDetails1() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
+
+
 	public UserDetails1(int id, String name, String mobileNumber, String email, String address, String city,
-			String state, String pincode, String password, String profileImage,String role,boolean isEnable) {
+			String state, String pincode, String password, String profileImage, String role, boolean isEnable,
+			boolean accountNonLocked, int failedAttempt, Date lockTime) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -52,9 +63,14 @@ public class UserDetails1 {
 		this.pincode = pincode;
 		this.password = password;
 		this.profileImage = profileImage;
-		this.role=role; 
-		this.isEnable= isEnable; 
+		this.role = role;
+		this.isEnable = isEnable;
+		this.accountNonLocked = accountNonLocked;
+		this.failedAttempt = failedAttempt;
+		this.lockTime = lockTime;
 	}
+
+
 
 	public int getId() {
 		return id;
@@ -150,6 +166,42 @@ public class UserDetails1 {
 
 	public void setEnable(boolean isEnable) {
 		this.isEnable = isEnable;
+	}
+
+
+
+	public boolean isAccountNonLocked() {
+		return accountNonLocked;
+	}
+
+
+
+	public void setAccountNonLocked(boolean accountNonLocked) {
+		this.accountNonLocked = accountNonLocked;
+	}
+
+
+
+	public int getFailedAttempt() {
+		return failedAttempt;
+	}
+
+
+
+	public void setFailedAttempt(int failedAttempt) {
+		this.failedAttempt = failedAttempt;
+	}
+
+
+
+	public Date getLockTime() {
+		return lockTime;
+	}
+
+
+
+	public void setLockTime(Date lockTime) {
+		this.lockTime = lockTime;
 	}
 
 	
