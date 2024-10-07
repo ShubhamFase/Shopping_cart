@@ -41,17 +41,17 @@ public class UserDetails1 {
 	private int failedAttempt;
 	
 	private Date lockTime;
+	
+	private String resetToken;
 
 	public UserDetails1() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-
-
 	public UserDetails1(int id, String name, String mobileNumber, String email, String address, String city,
 			String state, String pincode, String password, String profileImage, String role, boolean isEnable,
-			boolean accountNonLocked, int failedAttempt, Date lockTime) {
+			boolean accountNonLocked, int failedAttempt, Date lockTime, String resetToken) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -68,8 +68,8 @@ public class UserDetails1 {
 		this.accountNonLocked = accountNonLocked;
 		this.failedAttempt = failedAttempt;
 		this.lockTime = lockTime;
+		this.resetToken = resetToken;
 	}
-
 
 
 	public int getId() {
@@ -168,42 +168,37 @@ public class UserDetails1 {
 		this.isEnable = isEnable;
 	}
 
-
-
 	public boolean isAccountNonLocked() {
 		return accountNonLocked;
 	}
-
-
 
 	public void setAccountNonLocked(boolean accountNonLocked) {
 		this.accountNonLocked = accountNonLocked;
 	}
 
-
-
 	public int getFailedAttempt() {
 		return failedAttempt;
 	}
-
-
 
 	public void setFailedAttempt(int failedAttempt) {
 		this.failedAttempt = failedAttempt;
 	}
 
-
-
 	public Date getLockTime() {
 		return lockTime;
 	}
-
-
 
 	public void setLockTime(Date lockTime) {
 		this.lockTime = lockTime;
 	}
 
-	
-	
+	public String getResetToken() {
+		return resetToken;
+	}
+
+	public void setResetToken(String resetToken) {
+		this.resetToken = resetToken;
+	}
+
+    	
 }

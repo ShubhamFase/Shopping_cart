@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 		UserDetails1 saveUser = userRepository.save(userDetails);
 		return saveUser;
 	}
-
+ 
 	@Override
 	public UserDetails1 getUserByEmail(String email) {
 		
@@ -96,5 +96,25 @@ public class UserServiceImpl implements UserService {
 		return false;
 	}
 
+	@Override
+	public void updateUserResetToken(String email, String resetToken) {
+		UserDetails1 findByEmail = userRepository.findByEmail(email);
+		findByEmail.setResetToken(resetToken);
+		userRepository.save(findByEmail);
+	}
+
+	@Override
+	public UserDetails1 getUserByToken(String token) {
+		
+		return userRepository.findByResetToken(token);
+	}
+
+	@Override
+	public UserDetails1 updatePassword(UserDetails1 user) {
+		userRepository.save(user);
+		return null;
+	}
+    
+	
 	
 }

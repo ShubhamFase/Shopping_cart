@@ -1,16 +1,20 @@
 package com.ecom.controller;
 
 import java.io.File;
+
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -18,7 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,7 +32,10 @@ import com.ecom.model.UserDetails1;
 import com.ecom.service.CategoryService;
 import com.ecom.service.ProductService;
 import com.ecom.service.UserService;
+import com.ecom.util.CommonUtil;
 
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -42,6 +49,12 @@ public class HomeController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
+	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 	
 	@ModelAttribute
 	public void getUserDetails(Principal p,Model m) 
@@ -113,5 +126,77 @@ public class HomeController {
 			session.setAttribute("errormsg", "something went wrong");
 		}
 		return "redirect:/register";
+	} 
+	
+	@GetMapping("/forgotPassword")
+	public String  showForgotPassword() 
+	{
+		return "forgot_password";
+	}
+	
+	@PostMapping("/processPassword")
+	public String  processForgotPassword(@RequestParam String email,HttpSession session,HttpServletRequest request) throws UnsupportedEncodingException, MessagingException 
+	{
+		UserDetails1 userDetail=userService.getUserByEmail(email);
+		
+		if(ObjectUtils.isEmpty(userDetail)) 
+		{
+			session.setAttribute("errormsg", "INVALID EMAIL");
+		}
+		else 
+		{
+			String resetToken = UUID.randomUUID().toString();
+			userService.updateUserResetToken(email,resetToken);
+
+			// Generate URL= http://localhost:8080/resetPassword?token=ygdcbkseygadcjac 	 
+			String url=CommonUtil.generateUrl(request)+"/resetPassword?token="+resetToken;
+			Boolean sendMail = commonUtil.sendMail(url, email);
+			
+			if(sendMail) 
+			{
+				session.setAttribute("success", "Please check your email....Password reset link sent!!");
+			}
+			else 
+			{
+				session.setAttribute("errormsg", "Something wrong on server ! Email not sent.");
+			}
+		}
+		return "redirect:/forgotPassword";
+	}
+	
+	@GetMapping("/resetPassword")
+	public String showResetPassword(@RequestParam String token,HttpSession session,Model m) 
+	{
+		UserDetails1 userByToken = userService.getUserByToken(token);
+		
+		if(userByToken==null) 
+		{
+			m.addAttribute("msg", "Your link is invalid or expired");
+			return "message";
+		}
+		m.addAttribute("token",token);
+		return "reset_password";
+	}
+	
+	@PostMapping("/resetPassword")
+	public String resetPassword(@RequestParam String token,@RequestParam String password,Model m,HttpSession session) 
+	{
+		UserDetails1 userByToken = userService.getUserByToken(token);
+		
+		if(userByToken==null) 
+		{
+			m.addAttribute("msg", "Your link is invalid or expired!!!");
+			return "message";
+		}
+		else 
+		{
+			userByToken.setPassword(passwordEncoder.encode(password));
+			userByToken.setResetToken(null);
+			userService.updatePassword(userByToken);
+			session.setAttribute("success", "password change sucessfully!!!");
+			m.addAttribute("msg","password change sucessfully!!!!");
+			return "message";
+		}
+		
 	} 
 }
