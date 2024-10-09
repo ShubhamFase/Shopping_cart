@@ -46,7 +46,7 @@ public  class CategoryServiceImpl implements CategoryService {
 		
 		if(!ObjectUtils.isEmpty(category)) 
 		{
-			categoryRepository.delete(category);		
+		   categoryRepository.delete(category);		
 		   return true;
 		}   
 		return false;

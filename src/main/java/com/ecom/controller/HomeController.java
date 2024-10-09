@@ -26,9 +26,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ecom.model.Cart;
 import com.ecom.model.Category;
 import com.ecom.model.Product;
 import com.ecom.model.UserDetails1;
+import com.ecom.service.CartService;
 import com.ecom.service.CategoryService;
 import com.ecom.service.ProductService;
 import com.ecom.service.UserService;
@@ -56,6 +58,9 @@ public class HomeController {
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 	
+	@Autowired
+	private CartService cartService;
+	
 	@ModelAttribute
 	public void getUserDetails(Principal p,Model m) 
 	{
@@ -63,6 +68,8 @@ public class HomeController {
 		String email= p.getName();
 		UserDetails1 userDetail = userService.getUserByEmail(email);
 		m.addAttribute("user",userDetail);
+		Integer countCart = cartService.getCountCart(userDetail.getId());
+		m.addAttribute("cartCount",countCart);
 		}
 		List<Category> category = categoryService.getAllActiveCategory();
 		m.addAttribute("category", category);
@@ -188,7 +195,7 @@ public class HomeController {
 			m.addAttribute("msg", "Your link is invalid or expired!!!");
 			return "message";
 		}
-		else 
+		else   
 		{
 			userByToken.setPassword(passwordEncoder.encode(password));
 			userByToken.setResetToken(null);
@@ -199,4 +206,6 @@ public class HomeController {
 		}
 		
 	} 
+	
+	
 }

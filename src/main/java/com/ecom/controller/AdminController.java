@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ecom.model.Category;
 import com.ecom.model.Product;
 import com.ecom.model.UserDetails1;
+import com.ecom.service.CartService;
 import com.ecom.service.CategoryService;
 import com.ecom.service.CommonService;
 import com.ecom.service.CommonServiceImpl;
@@ -48,6 +49,9 @@ public class AdminController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private CartService cartService;
 
 	// we can used for show category and category wise product to home page
 	@ModelAttribute
@@ -56,6 +60,8 @@ public class AdminController {
 			String email = p.getName();
 			UserDetails1 userDetail = userService.getUserByEmail(email);
 			m.addAttribute("user", userDetail);
+			Integer countCart = cartService.getCountCart(userDetail.getId());
+			m.addAttribute("cartCount",countCart);
 		}
 		List<Category> category = categoryService.getAllActiveCategory();
 		m.addAttribute("category", category);
