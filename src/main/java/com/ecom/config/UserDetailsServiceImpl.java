@@ -14,15 +14,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		UserDetails1 user = userRepository.findByEmail(username);
-		
-		if(user == null) 
-		{
+
+		if (user == null) {
 			throw new UsernameNotFoundException("user not found");
 		}
-		return new CustomUser (user);
+		return new CustomUser(user);
 	}
 
 }
