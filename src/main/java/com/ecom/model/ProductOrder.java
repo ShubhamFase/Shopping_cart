@@ -26,7 +26,7 @@ public class ProductOrder {
 	
 	private Double price;
 	
-	private int quantity;
+	private Integer quantity;
 	
 	@ManyToOne
 	private UserDetails1 user;
@@ -43,7 +43,7 @@ public class ProductOrder {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ProductOrder(int id, String orderId, LocalDate orderDate, Product product, Double price, int quantity,
+	public ProductOrder(int id, String orderId, LocalDate orderDate, Product product, Double price, Integer quantity,
 			UserDetails1 user, String status, String paymentType, OrderAddress orderAddress) {
 		super();
 		this.id = id;
@@ -98,11 +98,11 @@ public class ProductOrder {
 		this.price = price;
 	}
 
-	public int getQuantity() {
+	public Integer getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(int quantity) {
+	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
 

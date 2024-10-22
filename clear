@@ -1,0 +1,77 @@
+[33mcommit ba6ea5b9e2eff54b9c58c067a8627d0960d7d845[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Shubham Fase <shubhamfase2015@gmail.com>
+Date:   Mon Oct 14 21:01:47 2024 +0530
+
+    done Biling address,payment type html page and show add to cart ,place order and view my orders completed v-22,23,24,25,26
+
+[33mcommit 9ea582ccb84288e91746680c9b35b6450f6b68f3[m
+Author: Shubham Fase <shubhamfase2015@gmail.com>
+Date:   Wed Oct 9 15:30:42 2024 +0530
+
+    done add to cart module v-20,21
+
+[33mcommit fde48539856436013812fdc4f2168c7502e364d5[m
+Author: Shubham Fase <shubhamfase2015@gmail.com>
+Date:   Mon Oct 7 13:07:48 2024 +0530
+
+    done forgot password v-19
+
+[33mcommit a765bc9825abcd5067e3f0b6b67af620d63f99fb[m
+Author: Shubham Fase <shubhamfase2015@gmail.com>
+Date:   Thu Oct 3 17:00:41 2024 +0530
+
+    done Account lock,unlock limit as well as done account lock for specific time when we put wrong password v-18
+
+[33mcommit bc3887eb71d15cde61fc4838e34b444b930b02d6[m
+Author: Shubham Fase <shubhamfase2015@gmail.com>
+Date:   Wed Oct 2 19:43:44 2024 +0530
+
+    done user base and admin base login as well as done Account enable or disable from admin side v-16,17
+
+[33mcommit 95669ce0d48bec4ebfb01cf1c74c79bc2408558f[m
+Author: Shubham Fase <shubhamfase2015@gmail.com>
+Date:   Mon Sep 30 23:41:23 2024 +0530
+
+    add role base wise spring security (user and admin) v-15
+
+[33mcommit 01d75d8a7e3ac599e770844c078e77260a476fde[m
+Author: Shubham Fase <shubhamfase2015@gmail.com>
+Date:   Thu Sep 26 23:30:28 2024 +0530
+
+    add user in to the database v-14
+
+[33mcommit 67c171a1e3e785af5a0d1cf9c58b658bc055e1c0[m
+Author: Shubham Fase <shubhamfase2015@gmail.com>
+Date:   Thu Sep 26 21:45:54 2024 +0530
+
+    view details of product and show all category and display product category wise
+
+[33mcommit 7c93138adfb76952029a5d0ba87e99b2474367b3[m
+Author: Shubham Fase <shubhamfase2015@gmail.com>
+Date:   Wed Sep 25 18:55:27 2024 +0530
+
+    add discount of price to product and view discount price,price and discount to home product page and show all category to home product page v-12,13
+
+[33mcommit d3719f62b5180c53dc060b963cc1b932a973cadc[m
+Author: Shubham Fase <shubhamfase2015@gmail.com>
+Date:   Mon Sep 23 14:40:50 2024 +0530
+
+    perform CRUD operation of Category and Product
+
+[33mcommit cc9f01399da055b14358479a70809e32f617b325[m
+Author: Shubham Fase <shubhamfase2015@gmail.com>
+Date:   Wed Aug 28 23:41:05 2024 +0530
+
+    add add_product,category,index html pages
+
+[33mcommit 41caded4ce9819a437542bf2831e81aa82da0fcc[m
+Author: Shubham Fase <shubhamfase2015@gmail.com>
+Date:   Wed Aug 28 22:16:28 2024 +0530
+
+    done request mapping for add_product,category pages
+
+[33mcommit 1791f38f774d3c73d2f490b0d89425f2780b7534[m
+Author: Shubham Fase <shubhamfase2015@gmail.com>
+Date:   Tue Aug 27 21:34:34 2024 +0530
+
+    add login,base,register,product and view product html pages

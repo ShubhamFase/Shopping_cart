@@ -1,5 +1,6 @@
 package com.ecom.service.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 
 import java.util.List;
@@ -16,7 +17,10 @@ import com.ecom.model.ProductOrder;
 import com.ecom.repository.CartRepository;
 import com.ecom.repository.OrderProductRepository;
 import com.ecom.service.OrderService;
+import com.ecom.util.CommonUtil;
 import com.ecom.util.OrderStatus;
+
+import jakarta.mail.MessagingException;
 
 @Service 
 public class OrderServiceImpl implements OrderService {
@@ -26,9 +30,13 @@ public class OrderServiceImpl implements OrderService {
 	
 	@Autowired 
 	private CartRepository cartRepository;
+	
+	@Autowired
+	private CommonUtil commonUtil;
+
 
 	@Override
-	public void saveOrder(int userId, OrderRequest orderRequest) {
+	public void saveOrder(int userId, OrderRequest orderRequest) throws UnsupportedEncodingException, MessagingException {
 		
 		List<Cart> cart = cartRepository.findByUserId(userId);
 		
@@ -58,7 +66,8 @@ public class OrderServiceImpl implements OrderService {
 			orderAddress.setPincode(orderRequest.getPincode());
 			
 			order.setOrderAddress(orderAddress);
-			orderProductRepository.save(order);	
+			ProductOrder saveOrder = orderProductRepository.save(order);	
+			commonUtil.sendMailForProductOrder(saveOrder, "success");
 		}
 
 	}
@@ -71,18 +80,25 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public Boolean orderStatus(int id, String st) {
+	public ProductOrder orderStatus(int id, String st) {
 		Optional<ProductOrder> findById = orderProductRepository.findById(id);
 		
 		if(findById.isPresent()) 
 		{
 			ProductOrder productOrder = findById.get();
 			productOrder.setStatus(st);
-			orderProductRepository.save(productOrder);
-			return true;
+			ProductOrder updateOrder = orderProductRepository.save(productOrder);
+			return updateOrder;
 		}
-		return false;
+		return null;
 	}
 
+	@Override
+	public List<ProductOrder> getAllOrders() {
+		
+		return orderProductRepository.findAll();
+	}
+
+	
 	
 }

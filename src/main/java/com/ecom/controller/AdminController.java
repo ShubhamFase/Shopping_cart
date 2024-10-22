@@ -3,6 +3,7 @@ package com.ecom.controller;
 import java.io.File;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,14 +28,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ecom.model.Category;
 import com.ecom.model.Product;
+import com.ecom.model.ProductOrder;
 import com.ecom.model.UserDetails1;
 import com.ecom.service.CartService;
 import com.ecom.service.CategoryService;
 import com.ecom.service.CommonService;
 import com.ecom.service.CommonServiceImpl;
+import com.ecom.service.OrderService;
 import com.ecom.service.ProductService;
 import com.ecom.service.UserService;
+import com.ecom.util.CommonUtil;
+import com.ecom.util.OrderStatus;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -52,6 +58,12 @@ public class AdminController {
 	
 	@Autowired
 	private CartService cartService;
+	
+	@Autowired
+	private OrderService orderService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	// we can used for show category and category wise product to home page
 	@ModelAttribute
@@ -284,5 +296,42 @@ public class AdminController {
 			session.setAttribute("errormsg", "something went wrong");
 		}
 		return "redirect:/admin/users";
+	}
+	
+	@GetMapping("/viewOrders")
+	public String viewAllOrders(Model m) 
+	{
+		List<ProductOrder> allOrders = orderService.getAllOrders();
+		m.addAttribute("allOrders",allOrders);
+		return "admin/Orders";
+	}
+	@PostMapping("/adminUpdateOrderStatus")
+	public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st,HttpSession session) {
+
+		OrderStatus[] values = OrderStatus.values();
+		String status = null;
+		for (OrderStatus orderstatus : values) 
+		{
+			if (orderstatus.getId().equals(st)) 
+			{
+				status = orderstatus.getName();
+			}
+		}
+		ProductOrder updateOrder = orderService.orderStatus(id, status);
+		try {
+			commonUtil.sendMailForProductOrder(updateOrder, status);
+		} catch (UnsupportedEncodingException | MessagingException e) {
+
+			e.printStackTrace();
+		}
+		
+		if(!ObjectUtils.isEmpty(updateOrder)) 
+		{
+			session.setAttribute("success", "status updated!!");
+		}else 
+		{
+			session.setAttribute("errormsg", "status not updated!!");
+		}
+		return "redirect:/admin/viewOrders";
 	}
 }

@@ -1,5 +1,6 @@
 package com.ecom.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 
 import java.util.List;
@@ -23,8 +24,10 @@ import com.ecom.service.CartService;
 import com.ecom.service.CategoryService;
 import com.ecom.service.OrderService;
 import com.ecom.service.UserService;
+import com.ecom.util.CommonUtil;
 import com.ecom.util.OrderStatus;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -42,6 +45,9 @@ public class UserController {
 
 	@Autowired
 	private OrderService orderService;
+
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@ModelAttribute
 	public void getUserDetails(Principal p, Model m) {
@@ -115,7 +121,7 @@ public class UserController {
 
 	// save biling address and payment type from user
 	@PostMapping("/saveOrder")
-	public String saveOrder(@ModelAttribute OrderRequest request, Principal p) {
+	public String saveOrder(@ModelAttribute OrderRequest request, Principal p) throws UnsupportedEncodingException, MessagingException {
 		UserDetails1 user = getLoggedInDetails(p);
 		orderService.saveOrder(user.getId(), request);
 		return "redirect:/user/success1";
@@ -126,7 +132,8 @@ public class UserController {
 	public String loadSuccess() {
 		return "user/success";
 	}
-    //view order
+
+	// view order
 	@GetMapping("/viewOrder")
 	public String viewOrder(Principal p, Model m) {
 		UserDetails1 loginUser = getLoggedInDetails(p);
@@ -137,24 +144,27 @@ public class UserController {
 
 	// cancel product
 	@GetMapping("/updateOrderStatus")
-	public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st,HttpSession session) {
+	public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, HttpSession session) {
 
 		OrderStatus[] values = OrderStatus.values();
 		String status = null;
-		for (OrderStatus orderstatus : values) 
-		{
-			if (orderstatus.getId().equals(st)) 
-			{
+		for (OrderStatus orderstatus : values) {
+			if (orderstatus.getId().equals(st)) {
 				status = orderstatus.getName();
 			}
 		}
-		Boolean updateOrder = orderService.orderStatus(id, status);
-		
-		if(updateOrder) 
-		{
+		ProductOrder updateOrder = orderService.orderStatus(id, status);
+
+		try {
+			commonUtil.sendMailForProductOrder(updateOrder, status);
+		} catch (UnsupportedEncodingException | MessagingException e) {
+
+			e.printStackTrace();
+		}
+
+		if (!ObjectUtils.isEmpty(updateOrder)) {
 			session.setAttribute("success", "status updated!!");
-		}else 
-		{
+		} else {
 			session.setAttribute("errormsg", "status not updated!!");
 		}
 		return "redirect:/user/viewOrder";
