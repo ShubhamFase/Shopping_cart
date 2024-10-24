@@ -1,18 +1,32 @@
 package com.ecom.service.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ecom.model.UserDetails1;
 import com.ecom.repository.UserRepository;
 import com.ecom.service.UserService;
 import com.ecom.util.AppConstant;
+
+import jakarta.servlet.http.HttpSession;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -111,10 +125,47 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDetails1 updatePassword(UserDetails1 user) {
-		userRepository.save(user);
-		return null;
+		UserDetails1 savePassword = userRepository.save(user);
+		return savePassword;
+	}
+
+	@Override
+	public UserDetails1 userUpdateProfile(UserDetails1 user,MultipartFile img) {
+	    UserDetails1 dbUser = userRepository.findById(user.getId()).get();
+	    
+	    if(!img.isEmpty()) 
+	    {
+	    	dbUser.setProfileImage(img.getOriginalFilename());
+	    }
+	    if(!ObjectUtils.isEmpty(dbUser)) 
+	    {
+	    	dbUser.setName(user.getName());
+	    	dbUser.setMobileNumber(user.getMobileNumber());
+	    	dbUser.setEmail(user.getEmail());
+	    	dbUser.setAddress(user.getAddress());
+	    	dbUser.setCity(user.getCity());
+	    	dbUser.setState(user.getState());
+	    	dbUser.setPincode(user.getPincode());
+	    	userRepository.save(dbUser);   
+	    }
+	    try {
+	    if(!img.isEmpty()) 
+		{
+			File saveFile = new ClassPathResource("static/img/").getFile();
+			Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profile_img" + File.separator
+					+ img.getOriginalFilename());
+
+			Files.copy(img.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+			
+		}
+	    }catch(Exception e)
+	    {
+	    	e.printStackTrace();
+	    }
+		return dbUser;
 	}
     
+	
 	
 	
 }

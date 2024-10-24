@@ -1,18 +1,17 @@
 package com.ecom.service.impl;
 
 import java.util.List;
-import java.util.Optional;
+
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import com.ecom.model.Category;
 import com.ecom.model.Product;
 import com.ecom.repository.ProductRepository;
 import com.ecom.service.ProductService;
 
-import io.micrometer.common.util.StringUtils;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -56,4 +55,12 @@ public class ProductServiceImpl implements ProductService {
 		return products;
 	}
 
+	@Override
+	public List<Product> searchProduct(String ch) 
+	{
+		
+		return productRepository.findByTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(ch, ch);
+	}
+
+	
 }

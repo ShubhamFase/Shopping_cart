@@ -3,6 +3,7 @@ package com.ecom.service;
 import java.util.List;
 
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ecom.model.UserDetails1;
 
@@ -27,4 +28,6 @@ public interface UserService {
 	public UserDetails1 getUserByToken(String token);
 	
 	public UserDetails1 updatePassword(UserDetails1 user);
+	
+	public UserDetails1 userUpdateProfile(UserDetails1 user,MultipartFile img);
 }
