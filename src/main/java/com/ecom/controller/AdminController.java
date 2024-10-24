@@ -207,9 +207,25 @@ public class AdminController {
 	}
 
 	// we can used for view all products to user
+	// as well as search product from admin side
 	@GetMapping("/products")
-	public String loadViewProducts(Model m) {
-		m.addAttribute("products", productService.getAllProducts());
+	public String loadViewProducts(Model m,@RequestParam(defaultValue="") String ch,HttpSession session) {
+		List<Product> products=null;
+		if(ch!=null && ch.length()>0) 
+		{
+			products = productService.searchProduct(ch);
+			if(ObjectUtils.isEmpty(products)) 
+			{
+				session.setAttribute("errormsg", "Product not available!!");
+				
+			}	
+			
+		}
+		else 
+		{
+			 products = productService.getAllProducts();
+		}
+		m.addAttribute("products",products);
 		return "admin/products";
 	}
 
@@ -303,6 +319,7 @@ public class AdminController {
 	{
 		List<ProductOrder> allOrders = orderService.getAllOrders();
 		m.addAttribute("allOrders",allOrders);
+		m.addAttribute("srch", false);
 		return "admin/Orders";
 	}
 	@PostMapping("/adminUpdateOrderStatus")
@@ -333,5 +350,32 @@ public class AdminController {
 			session.setAttribute("errormsg", "status not updated!!");
 		}
 		return "redirect:/admin/viewOrders";
+	}
+	// we can used for search order by order id from admin side
+	@GetMapping("/searchOrder")
+	public String searchOrder(@RequestParam String orderId,Model m,HttpSession session)
+
+	{
+		if(orderId!=null && orderId.length()>0)
+		{
+		ProductOrder orderByOrderId = orderService.getOrderByOrderId(orderId.trim());
+		
+		if(ObjectUtils.isEmpty(orderByOrderId)) 
+		{
+			session.setAttribute("errormsg", "Incorrect order Id!!");
+			m.addAttribute("orderById",null);
+		}
+		else 
+		{
+			m.addAttribute("orderById",orderByOrderId);
+		}
+		m.addAttribute("srch", true);
+		}else 
+		{
+			List<ProductOrder> allOrders = orderService.getAllOrders();
+			m.addAttribute("allOrders",allOrders);
+			m.addAttribute("srch", false);
+		}
+		return "admin/Orders";
 	}
 }

@@ -12,7 +12,8 @@
 			<div class="row">
 				<p class="text-center fs-3">Orders</p>
 				<hr>
-				<a href="/admin/" class="text-decoration-none"><i class="fa-solid fa-arrow-left"></i> Back</a>
+				<a href="/admin/" class="text-decoration-none"><i
+					class="fa-solid fa-arrow-left"></i> Back</a>
 				<th:block th:if="${session.success}">
 					<p class="text-success f-bold text-center">[[${session.success}]]</p>
 					<th:block th:text="${@commonServiceImpl.removeSessionMsg()}">
@@ -24,10 +25,10 @@
 					</th:block>
 				</th:block>
 				<div class="col-md-4 p-4">
-					<form>
+					<form action="/admin/searchOrder" method="get">
 						<div class="row">
 							<div class="col">
-								<input type="text" class="form-control" name=""
+								<input type="text" class="form-control" name="orderId"
 									placeholder="Enter order id">
 							</div>
 							<div class="col">
@@ -38,7 +39,7 @@
 				</div>
 				<div class="col-md-12 ps-4 pe-4">
 					<table class="table table-bordered card-sh">
-						<thead>
+						<thead class="table-light">
 							<tr>
 								<th scope="col">Order Id</th>
 								<th scope="col">Deliver Details</th>
@@ -50,53 +51,111 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="o:${allOrders}">
-								<th scope="row">[[${o.orderId}]]</th>
-								<td>Name: [[${o.orderAddress.firstName+'
-									'+o.orderAddress.lastName}]]<br> Email:
-									[[${o.orderAddress.email}]]<br> Mob No:
-									[[${o.orderAddress.mobileNumber}]]<br> Address:
-									[[${o.orderAddress.address}]]<br> City:
-									[[${o.orderAddress.city}]]<br> State:
-									[[${o.orderAddress.state}]], [[${o.orderAddress.pincode}]]
-								</td>
-								<td>[[${o.orderDate}]]</td>
-								<td>[[${o.product.title}]]</td>
-								<td>Quantity : [[${o.quantity}]] <br> Price :
-									[[${o.price}]] <br> Total Price : [[${o.quantity *
-									o.price}]]
-								</td>
-								<td>[[${o.status}]]</td>
-								<td>
-									<form action="/admin/adminUpdateOrderStatus" method="post">
-										<div class="row">
-											<div class="col">
-												<select class="form-control" name="st" required>
-													<option>--select--</option>
-													<option value="1">In Progress</option>
-													<option value="2">Order Received</option>
-													<option value="3">Product Packed</option>
-													<option value="4">Out For Delivery</option>
-													<option value="5">Delivered</option>
-													<option value="6">Cancelled</option>
-												</select>
-											</div>
-											<input th:value="${o.id}" name="id" type="hidden">
-											<div class="col">
-												   <th:block
-													th:if="${o.status=='Cancelled' || o.status =='Delivered'}">
-													<button class="btn btn-sm btn-primary col disabled">Update</button>
-													</th:block>
+							<th:block th:if="${srch}">
+								<th:block th:if="${orderById!=null}">
+									<tr>
+										<th scope="row">[[${orderById.orderId}]]</th>
+										<td>Name: [[${orderById.orderAddress.firstName+'
+											'+orderById.orderAddress.lastName}]]<br> Email:
+											[[${orderById.orderAddress.email}]]<br> Mob No:
+											[[${orderById.orderAddress.mobileNumber}]]<br> Address:
+											[[${orderById.orderAddress.address}]]<br> City:
+											[[${orderById.orderAddress.city}]]<br> State:
+											[[${orderById.orderAddress.state}]],
+											[[${orderById.orderAddress.pincode}]]
+										</td>
+										<td>[[${orderById.orderDate}]]</td>
+										<td>[[${orderById.product.title}]]</td>
+										<td>Quantity : [[${orderById.quantity}]] <br> Price
+											: [[${orderById.price}]] <br> Total Price :
+											[[${orderById.quantity * orderById.price}]]
+										</td>
+										<td>[[${orderById.status}]]</td>
+										<td>
+											<form action="/admin/adminUpdateOrderStatus" method="post">
+												<div class="row">
+													<div class="col">
+														<select class="form-control" name="st" required>
+															<option>--select--</option>
+															<option value="1">In Progress</option>
+															<option value="2">Order Received</option>
+															<option value="3">Product Packed</option>
+															<option value="4">Out For Delivery</option>
+															<option value="5">Delivered</option>
+															<option value="6">Cancelled</option>
+														</select>
+													</div>
+													<input th:value="${orderById.id}" name="id" type="hidden">
+													<div class="col">
 														<th:block
-															th:unless="${o.status=='Cancelled' || o.status=='Delivered'}">
+															th:if="${orderById.status=='Cancelled' || orderById.status =='Delivered'}">
+															<button class="btn btn-sm btn-primary col disabled">Update</button>
+														</th:block>
+														<th:block
+															th:unless="${orderById.status=='Cancelled' || orderById.status=='Delivered'}">
 															<button class="btn btn-sm btn-primary ">Update</button>
 														</th:block>
-																
+
+													</div>
+												</div>
+											</form>
+										</td>
+									</tr>
+								</th:block>
+								<th:block th:unless="${orderById!=null}">
+									<p class="fs-3 text-center text-danger">[[${errormsg}]]</p>
+								</th:block>
+							</th:block>
+							<th:block th:unless="${srch}">
+								<tr th:each="o:${allOrders}">
+									<th scope="row">[[${o.orderId}]]</th>
+									<td>Name: [[${o.orderAddress.firstName+'
+										'+o.orderAddress.lastName}]]<br> Email:
+										[[${o.orderAddress.email}]]<br> Mob No:
+										[[${o.orderAddress.mobileNumber}]]<br> Address:
+										[[${o.orderAddress.address}]]<br> City:
+										[[${o.orderAddress.city}]]<br> State:
+										[[${o.orderAddress.state}]], [[${o.orderAddress.pincode}]]
+									</td>
+									<td>[[${o.orderDate}]]</td>
+									<td>[[${o.product.title}]]</td>
+									<td>Quantity : [[${o.quantity}]] <br> Price :
+										[[${o.price}]] <br> Total Price : [[${o.quantity *
+										o.price}]]
+									</td>
+									<td>[[${o.status}]]</td>
+									<td>
+										<form action="/admin/adminUpdateOrderStatus" method="post">
+											<div class="row">
+												<div class="col">
+													<select class="form-control" name="st" required>
+														<option>--select--</option>
+														<option value="1">In Progress</option>
+														<option value="2">Order Received</option>
+														<option value="3">Product Packed</option>
+														<option value="4">Out For Delivery</option>
+														<option value="5">Delivered</option>
+														<option value="6">Cancelled</option>
+													</select>
+												</div>
+												<input th:value="${o.id}" name="id" type="hidden">
+												<div class="col">
+													<th:block
+														th:if="${o.status=='Cancelled' || o.status =='Delivered'}">
+														<button class="btn btn-sm btn-primary col disabled">Update</button>
+													</th:block>
+													<th:block
+														th:unless="${o.status=='Cancelled' || o.status=='Delivered'}">
+														<button class="btn btn-sm btn-primary ">Update</button>
+													</th:block>
+
+												</div>
 											</div>
-										</div>
-									</form>
-								</td>
-							</tr>
+										</form>
+									</td>
+								</tr>
+
+							</th:block>
 
 						</tbody>
 					</table>

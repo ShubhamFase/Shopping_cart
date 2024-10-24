@@ -18,4 +18,6 @@ public interface OrderService {
 	public ProductOrder orderStatus(int id,String st);
 	
 	public List<ProductOrder> getAllOrders();
+	
+	public ProductOrder getOrderByOrderId(String orderId);
 }	
